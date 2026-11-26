@@ -82,32 +82,7 @@ flowchart LR
 
 本地开发也可使用 SQLite 与 Qdrant local。
 
-## 快速开始
-
-### 方式一：Docker Compose
-
-准备 Docker 与 Compose，克隆仓库并创建部署配置：
-
-```bash
-git clone https://github.com/fredtrump86/KnowledgePilot.git
-cd KnowledgePilot
-cp .env.production.example .env.docker
-```
-
-编辑 `.env.docker`，配置存储服务密码、应用密钥与模型连接，然后启动：
-
-```bash
-docker compose --env-file .env.docker up --build -d
-```
-
-| 入口 | 地址 |
-| --- | --- |
-| 知识工作台 | [http://localhost:8080](http://localhost:8080) |
-| API 文档 | [http://localhost:8010/docs](http://localhost:8010/docs) |
-
-使用宿主机 Ollama、配置 OCR 或调整服务参数，可查阅 [部署指南](docs/deployment.md)。
-
-### 方式二：本地开发
+### 本地开发部署
 
 环境要求：**Python 3.12、Node.js 20.19+**，以及可用的模型服务。
 
@@ -138,21 +113,6 @@ Windows 可使用 `.venv\Scripts\Activate.ps1` 激活环境，也可使用已有
 
 其他系统或已激活 Python 环境时，可直接运行 `python scripts/dev.py`。访问 [http://localhost:5173](http://localhost:5173)。启用 Redis 队列时须同时配置 Qdrant server；本次新启动服务的日志保存在 `artifacts/dev/`。
 
-## 模型接入
-
-| 接入方式 | 典型配置 | 用途 |
-| --- | --- | --- |
-| Ollama | `RAG_LLM_PROVIDER=ollama` | 本地生成与视觉理解 |
-| vLLM / OpenAI 兼容 API | `RAG_LLM_PROVIDER=openai` | 自托管或远程模型服务 |
-| Ollama Embedding | `RAG_EMBEDDING_PROVIDER=ollama` | 本地语义向量 |
-| 兼容 Embedding API | `RAG_EMBEDDING_PROVIDER=openai` | 独立向量模型服务 |
-| SentenceTransformers | `RAG_EMBEDDING_PROVIDER=sentence-transformers` | 本地语义编码 |
-| Cross-Encoder | `RAG_RERANKER_MODEL` | 检索候选精排 |
-
-Ollama 示例模型为 `qwen3.5:9b` 与 `qwen3-embedding:8b`。视觉模型通过 `RAG_VISION_MODEL` 配置，模型名称、地址、上下文窗口和向量维度均可调整。
-
-项目同时提供轻量演示配置 `.env.example`，使用哈希向量与原文摘录，方便在未接入模型时体验文档管理和检索流程。
-
 ## 开始使用
 
 1. **建立知识空间**：注册账户，按业务或主题创建知识库。
@@ -161,19 +121,6 @@ Ollama 示例模型为 `qwen3.5:9b` 与 `qwen3-embedding:8b`。视觉模型通�
 4. **持续评测**：将答案加入评测集，填写参考答案与期望文档，对比检索策略与模型结果。
 
 仓库提供 [演示文档](examples/company-handbook.md)、[产品说明](examples/product-guide.md) 和 [评测案例](examples/evaluation-cases.json)，可用于体验完整流程。
-
-## 测试与开发
-
-| 检查 | 命令 |
-| --- | --- |
-| 静态检查 | `python -m ruff check backend scripts` |
-| 后端测试 | `cd backend` 后运行 `python -m pytest -q` |
-| 前端构建 | `cd frontend` 后运行 `npm run build` |
-| 业务回归与检索容量 | `python scripts/benchmark.py` |
-| 模型链路验证 | `python scripts/smoke.py` |
-| Ragas 评测验证 | `python scripts/smoke.py --with-ragas` |
-
-GitHub Actions 覆盖后端测试、真实 PostgreSQL/Redis/Qdrant 集成回归、合成业务门槛与前端构建；模型与容器验证记录见 [评测与验证](docs/validation.md)。
 
 ## 项目结构
 
@@ -192,16 +139,3 @@ KnowledgePilot/
 ├── scripts/                 # 开发与验证工具
 └── docker-compose.yml       # 应用与基础服务编排
 ```
-
-## 文档
-
-| 文档 | 内容 |
-| --- | --- |
-| [系统架构](docs/architecture.md) | 数据流、检索策略、任务恢复与缓存设计 |
-| [部署指南](docs/deployment.md) | Docker、本地开发、模型接入与运维 |
-| [设计原则](docs/design.md) | 设计目标、技术取舍与相关开源项目 |
-| [评测与验证](docs/validation.md) | 自动化检查、模型链路与评测记录 |
-
-## License & Acknowledgements
-
-本项目采用 [MIT License](LICENSE)。感谢 [KnowAgenticRAG](https://github.com/Zhongye1/KnowAgenticRAG) 提供的 Agentic RAG 架构设计启发，以及 LangChain、Qdrant、Ragas 和 Vue 等开源项目。
