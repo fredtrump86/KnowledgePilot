@@ -2,30 +2,6 @@
 
 # 企智搜｜KnowledgePilot
 
-### 企业知识检索平台
-
-连接分散的知识，让每一个答案有据可循。
-
-[![CI](https://github.com/fredtrump86/KnowledgePilot/actions/workflows/ci.yml/badge.svg)](https://github.com/fredtrump86/KnowledgePilot/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
-![Vue](https://img.shields.io/badge/Vue-3-4FC08D?logo=vuedotjs&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
-<br>
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-FF4438?logo=redis&logoColor=white)
-![Qdrant](https://img.shields.io/badge/Qdrant-DC244C?logo=qdrant&logoColor=white)
-![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?logo=langchain&logoColor=white)
-![Ragas](https://img.shields.io/badge/Ragas-8B5CF6)
-![Ollama](https://img.shields.io/badge/Ollama-222222?logo=ollama&logoColor=white)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-[项目简介](#项目简介) · [产品预览](#产品预览) · [核心能力](#核心能力) · [系统架构](#系统架构) · [快速开始](#快速开始) · [模型接入](#模型接入) · [团队治理](docs/enterprise.md) · [文档](#文档)
-
-</div>
-
----
-
 ## 项目简介
 
 **企智搜｜KnowledgePilot** 面向企业知识管理与个人知识沉淀场景，基于 RAG 技术，将文档管理、多模态解析、混合检索、引用问答与质量评测整合到统一工作台。
