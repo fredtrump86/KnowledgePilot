@@ -2,8 +2,6 @@
 
 # 企智搜｜KnowledgePilot
 
-## 项目简介
-
 **企智搜｜KnowledgePilot** 面向企业知识管理与个人知识沉淀场景，基于 RAG 技术，将文档管理、多模态解析、混合检索、引用问答与质量评测整合到统一工作台。
 
 从产品手册、业务制度到研究资料，企智搜将原始文档转化为可检索的知识单元，结合大语言模型生成带有原文依据的回答。用户可以沿着引用回到文档与页码，通过检索轨迹了解证据如何被找到，并将历史答案纳入持续评测。
@@ -18,39 +16,6 @@
 | 产品与技术支持 | 将产品说明、使用手册和技术文档组织为可查询的知识库 |
 | 研究与资料整理 | 跨文档检索关键信息，保留文献片段和页码依据 |
 | RAG 应用开发 | 对比检索策略、检查 Agent 轨迹、复评历史答案与模型效果 |
-
-## 产品预览
-
-### 知识空间
-
-按主题组织知识库，统一管理文档、解析状态与检索分块。
-
-![企智搜知识空间与文档管理](docs/images/knowledge-workspace.jpg)
-
-### 引用问答
-
-结合私有文档生成回答，在同一页面查看来源编号、原文片段与页码。
-
-![企智搜引用问答与参考证据](docs/images/cited-chat.jpg)
-
-### 质量评测
-
-将历史答案加入评测，结合参考答案与期望文档查看检索指标和 Ragas 结果。
-
-![企智搜历史答案复评与质量指标](docs/images/evaluation-center.jpg)
-
-<details>
-<summary>查看团队治理与文档版本管理</summary>
-
-![组织成员、知识库单独授权与操作审计](docs/images/governance-workspace.jpg)
-
-![文档版本、历史恢复与有效期](docs/images/document-versions.jpg)
-
-![平台管理员调整配额与管理任务](docs/images/platform-controls.jpg)
-
-</details>
-
-*截图使用演示账号与合成示例资料，展示实际运行界面。*
 
 ## 核心能力
 
@@ -78,26 +43,6 @@
 
 围绕“检索—证据检查—查询改写—生成”组织问答流程。在证据覆盖不足时进行有界关键词改写，对多轮候选合并去重，再统一精排。检索步骤与处理轨迹可在工作台查看。
 
-### 🖼️ 多模态文档理解
-
-支持 **PDF、DOCX、TXT、Markdown、CSV、JSON、HTML 与图片**。PDF 保留页码，Word 文档提取正文与表格；扫描页和图像可接入 **Tesseract OCR** 或 **Qwen 视觉模型**，将图文信息纳入统一检索。
-
-Markdown 按章节和内容块组织证据，保留代码围栏与表格表头，引用可定位到原始文件行号。外链图片保留说明并提示尚未识别，需要图像内容时另行上传图片文件。使用与升级说明见 [Markdown 知识库](docs/markdown-quality.md)。
-
-### 📊 评测与回放
-
-内置 **Hit@5、Recall@5、MRR@5** 检索评测与 Dense / Hybrid 对照，支持通过 **Ragas** 评估忠实度、答案相关性、上下文精确率和召回率。
-
-评测通过独立 Worker 异步运行，前端自动更新状态。历史答案可直接加入评测，复用当时的答案和证据。答案缓存与评审缓存分别管理，减少相同内容的重复生成和评分。
-
-### 🛡️ 团队治理与运行保障
-
-通过可撤销服务端会话、HttpOnly Cookie、OIDC 单点登录、角色授权与操作审计管理访问。登录与问答限流、账户和服务并发上限、存储与请求预算，共同约束资源使用。
-
-平台管理员可在前端保存全局或指定账号配额，新请求即时读取；任务管理支持查看摄取、评测与清理进度，以及取消、重试和故障恢复。PDF 优先读取文字层，并显示逐页解析和向量生成阶段。
-
-删除操作提交持久清理任务，在向量服务恢复后继续重试；Alembic 负责数据库升级，协调备份覆盖数据库、原件与向量快照，并提供完整性校验和空目标恢复保护。健康探针、Prometheus 指标与示例告警规则用于运行诊断。配置方式见[团队治理与可靠性](docs/enterprise.md)。
-
 ### 🏠 灵活的私有化部署
 
 支持 **Ollama、vLLM / OpenAI 兼容接口与 SentenceTransformers**，可根据硬件和数据需求选择模型。提供 Docker Compose 与本地开发两种运行方式，覆盖前端、API、独立摄取与评测 Worker、迁移及存储服务。
@@ -112,7 +57,7 @@ flowchart LR
     Auth --> Upload[文档上传]
     Upload --> Jobs[持久化任务 / Redis]
     Jobs --> Worker[异步 Worker]
-    Worker --> Parse[解析 / OCR / 视觉理解]
+    Worker --> Parse[解析]
     Parse --> Split[按页分块 / Embedding]
     Split --> Qdrant[(Qdrant)]
     Split --> PG[(PostgreSQL)]
@@ -123,7 +68,6 @@ flowchart LR
     Hybrid --> Rank[RRF / Cross-Encoder]
     Rank --> Answer[LLM / 引用与证据]
     Answer --> Web
-    Answer --> Eval[历史回放 / Ragas]
     Eval --> PG
 ```
 
@@ -134,10 +78,9 @@ flowchart LR
 | 检索层 | Qdrant · BM25 · RRF · Cross-Encoder，向量召回与融合排序 |
 | 任务与缓存 | Redis · SQL 持久化任务，异步摄取、租约恢复与结果复用 |
 | 业务存储 | PostgreSQL，账户、知识库、文档、会话及评测记录 |
-| 文档理解 | PyPDF · python-docx · Tesseract · 视觉模型 |
-| 评测与交付 | Ragas · Pytest · Ruff · GitHub Actions · Docker Compose |
+| 文档理解 | PyPDF · python-docx · Tesseract |
 
-本地开发也可使用 SQLite 与 Qdrant local。完整数据流与实现细节见 [架构文档](docs/architecture.md)。
+本地开发也可使用 SQLite 与 Qdrant local。
 
 ## 快速开始
 
